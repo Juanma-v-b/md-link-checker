@@ -85,7 +85,7 @@ describe('checkUrl', () => {
   it('sends a descriptive user agent', async () => {
     await check('/ok');
 
-    expect(server.userAgents.at(-1)).toMatch(/^md-link-checker\/\d+\.\d+\.\d+/);
+    expect(server.userAgents.at(-1)).toMatch(/^mdlinks\/\d+\.\d+\.\d+/);
   });
 
   it('rejects a malformed URL without throwing', async () => {

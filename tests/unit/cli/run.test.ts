@@ -55,7 +55,7 @@ describe('run', () => {
     const result = await capture('--version');
 
     expect(result.code).toBe(EXIT_OK);
-    expect(result.stdout.trim()).toBe(`md-link-checker ${VERSION}`);
+    expect(result.stdout.trim()).toBe(`mdlinks ${VERSION}`);
   });
 
   it('fails with a usage error when no target is given', async () => {

@@ -1,7 +1,7 @@
 import type { IssueCode, Severity } from '../types.js';
 import { VERSION } from '../version.js';
 
-const USER_AGENT = `md-link-checker/${VERSION}`;
+const USER_AGENT = `mdlinks/${VERSION}`;
 
 /**
  * Statuses that usually mean "this server does not want bots" or "slow down",

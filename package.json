@@ -1,5 +1,5 @@
 {
-  "name": "md-link-checker",
+  "name": "mdlinks",
   "version": "0.1.0",
   "description": "CLI that finds broken links, missing anchors and undefined references in Markdown files.",
   "type": "module",
@@ -8,6 +8,7 @@
     "node": ">=20.11"
   },
   "bin": {
+    "mdlinks": "./dist/cli.js",
     "md-link-checker": "./dist/cli.js"
   },
   "main": "./dist/index.js",
@@ -24,6 +25,13 @@
     "CHANGELOG.md",
     "LICENSE"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Juanma-v-b/md-link-checker.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Juanma-v-b/md-link-checker/issues"
+  },
   "keywords": [
     "markdown",
     "links",
