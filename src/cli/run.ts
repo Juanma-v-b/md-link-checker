@@ -1,6 +1,10 @@
 import process from 'node:process';
-import { UsageError } from '../errors.js';
-import { EXIT_OK, EXIT_USAGE } from '../exit-codes.js';
+import { analyzeProject } from '../analyze.js';
+import { AnalysisError, DiscoveryError, UsageError } from '../errors.js';
+import { EXIT_ISSUES, EXIT_OK, EXIT_USAGE } from '../exit-codes.js';
+import { formatHumanReport } from '../report/human.js';
+import { formatJsonReport } from '../report/json.js';
+import { buildCheckResult } from '../report/summary.js';
 import type { CliOptions, ParsedArgs } from '../types.js';
 import { VERSION } from '../version.js';
 import { parseCliArgs } from './args.js';
@@ -56,17 +60,38 @@ export async function run(
     return EXIT_OK;
   }
 
-  executeCheck(parsed.options, context);
-  return EXIT_USAGE;
+  return executeCheck(parsed.options, context);
 }
 
-/**
- * The pipeline (discovery → analysis → validation → report) is added in PR #1
- * and PR #2. Until then the command fails loudly instead of pretending that
- * the project was checked.
- */
-function executeCheck(options: CliOptions, context: RunContext): void {
-  context.stderr(
-    `md-link-checker: analysis engine not implemented yet (targets: ${options.targets.join(', ')}).\n`,
+async function executeCheck(options: CliOptions, context: RunContext): Promise<number> {
+  const startedAt = performance.now();
+
+  let analysis;
+  try {
+    analysis = await analyzeProject(options.targets, {
+      cwd: context.cwd,
+      ignore: options.ignore,
+    });
+  } catch (error) {
+    if (error instanceof DiscoveryError || error instanceof AnalysisError) {
+      context.stderr(`md-link-checker: ${error.message}\n`);
+      return EXIT_USAGE;
+    }
+    throw error;
+  }
+
+  const result = buildCheckResult(analysis, Math.round(performance.now() - startedAt));
+  context.stdout(
+    options.json ? formatJsonReport(result) : formatHumanReport(analysis, result),
   );
+
+  if (result.summary.errors > 0) {
+    return EXIT_ISSUES;
+  }
+
+  if (options.strict && result.summary.warnings > 0) {
+    return EXIT_ISSUES;
+  }
+
+  return EXIT_OK;
 }

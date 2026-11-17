@@ -2,18 +2,6 @@ import { parseArgs } from 'node:util';
 import { UsageError } from '../errors.js';
 import type { CliOptions, ParsedArgs } from '../types.js';
 
-/** Directories skipped unless the user asks otherwise. */
-export const DEFAULT_IGNORES = [
-  'node_modules',
-  'dist',
-  'build',
-  'coverage',
-  '.git',
-  '.next',
-  '.nuxt',
-  '.output',
-] as const;
-
 export const DEFAULT_TIMEOUT_MS = 10_000;
 export const DEFAULT_CONCURRENCY = 8;
 export const MAX_CONCURRENCY = 64;

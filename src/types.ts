@@ -94,6 +94,15 @@ export interface ClassifiedReference {
   resolvedPath: string | null;
 }
 
+/** Result of the analysis phase: every document plus its classified references. */
+export interface ProjectAnalysis {
+  cwd: string;
+  documents: DocumentAnalysis[];
+  references: ClassifiedReference[];
+  /** Static findings: undefined references and unused definitions. */
+  issues: Issue[];
+}
+
 /** A single finding, ready to be printed or serialised. */
 export interface Issue {
   code: IssueCode;
