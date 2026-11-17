@@ -1,19 +1,60 @@
-import type { CheckResult, ClassifiedReference, ProjectAnalysis } from '../types.js';
+import type { CheckResult, ClassifiedReference, Issue, ProjectAnalysis } from '../types.js';
+
+export interface HumanReportOptions {
+  analyzeOnly: boolean;
+  skipExternal: boolean;
+}
 
 /**
- * Terminal report: an inventory of every reference grouped by document, then
- * the problems found, then a one-line summary. Positions use `file:line:col`
- * so editors and terminals can make them clickable.
+ * Terminal report. In the default mode it lists the problems grouped by
+ * document; with `--analyze-only` it also prints the inventory of every
+ * reference found. Positions use `file:line:col` so editors and terminals can
+ * make them clickable.
  */
-export function formatHumanReport(analysis: ProjectAnalysis, result: CheckResult): string {
-  const lines: string[] = [];
+export function formatHumanReport(
+  analysis: ProjectAnalysis,
+  result: CheckResult,
+  options: HumanReportOptions,
+): string {
   const { summary } = result;
-  const referencesByDocument = groupReferences(analysis);
+  const lines: string[] = [];
+
+  if (options.analyzeOnly) {
+    lines.push(
+      `Analyzed ${count(summary.files, 'file')} and ${count(summary.references, 'reference')}.`,
+      '',
+    );
+    appendInventory(analysis, lines);
+  } else {
+    const urls =
+      summary.uniqueUrls > 0 ? ` (${count(summary.uniqueUrls, 'unique URL')})` : '';
+    lines.push(
+      `Checked ${count(summary.files, 'file')} and ${count(summary.references, 'reference')}${urls}.`,
+      '',
+    );
+  }
+
+  appendIssues(result.issues, lines);
 
   lines.push(
-    `Analyzed ${count(summary.files, 'file')} and ${count(summary.references, 'reference')}.`,
-    '',
+    `Summary: ${count(summary.files, 'file')}, ${count(summary.references, 'reference')}, ` +
+      `${count(summary.errors, 'error')}, ${count(summary.warnings, 'warning')} ` +
+      `(${summary.durationMs} ms)`,
   );
+
+  if (options.analyzeOnly) {
+    lines.push('', 'Links were not validated (--analyze-only).');
+  } else if (options.skipExternal) {
+    lines.push('', 'External links were not checked (--skip-external).');
+  }
+
+  lines.push('');
+
+  return lines.join('\n');
+}
+
+function appendInventory(analysis: ProjectAnalysis, lines: string[]): void {
+  const referencesByDocument = groupReferences(analysis);
 
   for (const document of analysis.documents) {
     lines.push(document.relativePath);
@@ -30,28 +71,31 @@ export function formatHumanReport(analysis: ProjectAnalysis, result: CheckResult
 
     lines.push('');
   }
+}
 
-  if (result.issues.length === 0) {
-    lines.push('No problems found.');
-  } else {
-    lines.push('Problems');
-    for (const issue of result.issues) {
-      const location = `${issue.relativePath}:${issue.position.line}:${issue.position.column}`;
-      lines.push(`  ${location}  ${issue.severity.padEnd(8)} ${issue.code}  ${issue.message}`);
-    }
+function appendIssues(issues: readonly Issue[], lines: string[]): void {
+  if (issues.length === 0) {
+    lines.push('No problems found.', '');
+    return;
   }
 
-  lines.push(
-    '',
-    `Summary: ${count(summary.files, 'file')}, ${count(summary.references, 'reference')}, ` +
-      `${count(summary.errors, 'error')}, ${count(summary.warnings, 'warning')} ` +
-      `(${summary.durationMs} ms)`,
-    '',
-    'Note: only references and definitions were checked; link validation is not available yet.',
-    '',
-  );
+  lines.push('Problems');
 
-  return lines.join('\n');
+  let currentFile: string | null = null;
+
+  for (const issue of issues) {
+    if (issue.relativePath !== currentFile) {
+      currentFile = issue.relativePath;
+      lines.push(`  ${issue.relativePath}`);
+    }
+
+    const position = `${issue.position.line}:${issue.position.column}`;
+    lines.push(
+      `    ${position.padEnd(8)} ${issue.severity.padEnd(8)} ${issue.code.padEnd(20)} ${issue.message}`,
+    );
+  }
+
+  lines.push('');
 }
 
 function groupReferences(analysis: ProjectAnalysis): Map<string, ClassifiedReference[]> {

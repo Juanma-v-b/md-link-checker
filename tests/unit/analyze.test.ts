@@ -21,7 +21,7 @@ describe('analyzeProject', () => {
 
   it('consolidates references and static issues into a result', async () => {
     const analysis = await analyzeProject(['.'], { cwd: fixture });
-    const result = buildCheckResult(analysis, 12);
+    const result = buildCheckResult(analysis, analysis.issues, { durationMs: 12, uniqueUrls: 3 });
 
     expect(result.summary).toMatchObject({
       files: 4,

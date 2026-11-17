@@ -1,6 +1,6 @@
 {
   "name": "md-link-checker",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "CLI that finds broken links, missing anchors and undefined references in Markdown files.",
   "type": "module",
   "license": "MIT",
