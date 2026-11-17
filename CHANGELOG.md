@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-11-17
+
 ### Added
 
 - Project scaffolding: TypeScript (NodeNext, strict), Vitest, CI workflow.
@@ -20,6 +22,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Classification of destinations: external HTTP, local files, local images,
   same-document anchors and cross-document anchors.
 - Detection of references without a definition and definitions that nothing uses.
-- Human-readable inventory and `--json` report, with `0` / `1` / `2` exit codes.
+- Local file and image existence checks, resolved relative to the source document.
+- Fragment validation for same-document and cross-document links, including
+  Markdown files outside the scanned targets.
+- External URL checks with per-request timeout, redirect handling, URL
+  de-duplication and bounded concurrency.
+- Warnings instead of errors for anti-bot responses (`401`, `403`, `405`, `429`)
+  and timeouts, so healthy links do not fail a build by accident.
+- `--timeout`, `--concurrency`, `--skip-external`, `--analyze-only` and
+  `--strict` wired into the CLI.
+- Human-readable report grouped by document and the `--json` report, with
+  `0` / `1` / `2` exit codes for CI.
 
-[Unreleased]: https://github.com/OWNER/md-link-checker/compare/main...HEAD
+[Unreleased]: https://github.com/Juanma-v-b/md-link-checker/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/Juanma-v-b/md-link-checker/releases/tag/v0.1.0

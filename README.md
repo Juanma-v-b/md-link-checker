@@ -49,6 +49,7 @@ options exit with `2`.
 | `--timeout <ms>` | How long to wait for a website before giving up (default: 10000) |
 | `--concurrency <n>` | How many websites to check at the same time (default: 8) |
 | `--skip-external` | Check only local files and anchors, without visiting websites |
+| `--analyze-only` | List all the links found without checking them |
 | `--json` | Print the result as JSON |
 | `--strict` | Also fail when there are warnings, not only errors |
 | `-h`, `--help` | Show help |

@@ -5,6 +5,7 @@ import { EXIT_ISSUES, EXIT_OK, EXIT_USAGE } from '../exit-codes.js';
 import { formatHumanReport } from '../report/human.js';
 import { formatJsonReport } from '../report/json.js';
 import { buildCheckResult } from '../report/summary.js';
+import { validateProject } from '../validation/validate.js';
 import type { CliOptions, ParsedArgs } from '../types.js';
 import { VERSION } from '../version.js';
 import { parseCliArgs } from './args.js';
@@ -80,9 +81,32 @@ async function executeCheck(options: CliOptions, context: RunContext): Promise<n
     throw error;
   }
 
-  const result = buildCheckResult(analysis, Math.round(performance.now() - startedAt));
+  let issues = analysis.issues;
+  let uniqueUrls = 0;
+
+  if (!options.analyzeOnly) {
+    const validation = await validateProject(analysis, {
+      timeoutMs: options.timeoutMs,
+      concurrency: options.concurrency,
+      skipExternal: options.skipExternal,
+    });
+
+    issues = validation.issues;
+    uniqueUrls = validation.checkedUrls;
+  }
+
+  const result = buildCheckResult(analysis, issues, {
+    durationMs: Math.round(performance.now() - startedAt),
+    uniqueUrls,
+  });
+
   context.stdout(
-    options.json ? formatJsonReport(result) : formatHumanReport(analysis, result),
+    options.json
+      ? formatJsonReport(result)
+      : formatHumanReport(analysis, result, {
+          analyzeOnly: options.analyzeOnly,
+          skipExternal: options.skipExternal,
+        }),
   );
 
   if (result.summary.errors > 0) {

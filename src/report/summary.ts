@@ -1,25 +1,31 @@
 import { compareStrings } from '../utils/path.js';
 import type { CheckResult, CheckSummary, Issue, ProjectAnalysis } from '../types.js';
 
+export interface ReportOptions {
+  durationMs: number;
+  /** Unique external URLs that were actually requested. */
+  uniqueUrls: number;
+}
+
 /**
- * Aggregates a project analysis into the stable, machine-readable shape used
- * by `--json` and by the human report.
+ * Aggregates the analysis and its issues into the stable, machine-readable
+ * shape used by `--json` and by the human report.
  */
-export function buildCheckResult(analysis: ProjectAnalysis, durationMs: number): CheckResult {
-  const issues = [...analysis.issues].sort(compareIssues);
-  const errors = issues.filter((issue) => issue.severity === 'error').length;
+export function buildCheckResult(
+  analysis: ProjectAnalysis,
+  issues: readonly Issue[],
+  options: ReportOptions,
+): CheckResult {
+  const sortedIssues = [...issues].sort(compareIssues);
+  const errors = sortedIssues.filter((issue) => issue.severity === 'error').length;
 
   const summary: CheckSummary = {
     files: analysis.documents.length,
     references: analysis.references.length,
-    uniqueUrls: new Set(
-      analysis.references
-        .filter((reference) => reference.kind === 'external-http')
-        .map((reference) => reference.href),
-    ).size,
+    uniqueUrls: options.uniqueUrls,
     errors,
-    warnings: issues.length - errors,
-    durationMs,
+    warnings: sortedIssues.length - errors,
+    durationMs: options.durationMs,
   };
 
   return {
@@ -29,7 +35,7 @@ export function buildCheckResult(analysis: ProjectAnalysis, durationMs: number):
       relativePath: document.relativePath,
       references: document.references.length,
     })),
-    issues,
+    issues: sortedIssues,
   };
 }
 

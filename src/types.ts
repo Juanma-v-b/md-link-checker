@@ -31,8 +31,7 @@ export type IssueCode =
   | 'HTTP_BLOCKED'
   | 'HTTP_TIMEOUT'
   | 'REDIRECT_LOOP'
-  | 'NETWORK_ERROR'
-  | 'INVALID_PATH';
+  | 'NETWORK_ERROR';
 
 /** 1-based line and column, as reported by the Markdown parser. */
 export interface SourcePosition {
