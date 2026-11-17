@@ -1,6 +1,6 @@
+import { DEFAULT_IGNORES } from '../discovery/ignore.js';
 import {
   DEFAULT_CONCURRENCY,
-  DEFAULT_IGNORES,
   DEFAULT_TIMEOUT_MS,
   MAX_CONCURRENCY,
 } from './args.js';
