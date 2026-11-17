@@ -47,7 +47,7 @@ export async function run(
     if (!(error instanceof UsageError)) {
       throw error;
     }
-    context.stderr(`mdlinks: ${error.message}\n\nRun "mdlinks --help" for usage.\n`);
+    context.stderr(`md-link-checker: ${error.message}\n\nRun "md-link-checker --help" for usage.\n`);
     return EXIT_USAGE;
   }
 
@@ -57,7 +57,7 @@ export async function run(
   }
 
   if (parsed.command === 'version') {
-    context.stdout(`mdlinks ${VERSION}\n`);
+    context.stdout(`md-link-checker ${VERSION}\n`);
     return EXIT_OK;
   }
 
@@ -75,7 +75,7 @@ async function executeCheck(options: CliOptions, context: RunContext): Promise<n
     });
   } catch (error) {
     if (error instanceof DiscoveryError || error instanceof AnalysisError) {
-      context.stderr(`mdlinks: ${error.message}\n`);
+      context.stderr(`md-link-checker: ${error.message}\n`);
       return EXIT_USAGE;
     }
     throw error;

@@ -7,6 +7,6 @@ try {
   process.exitCode = await run(process.argv.slice(2));
 } catch (error) {
   const detail = error instanceof Error ? (error.stack ?? error.message) : String(error);
-  process.stderr.write(`mdlinks: unexpected error\n${detail}\n`);
+  process.stderr.write(`md-link-checker: unexpected error\n${detail}\n`);
   process.exitCode = EXIT_USAGE;
 }

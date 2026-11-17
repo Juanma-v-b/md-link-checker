@@ -1,5 +1,5 @@
 {
-  "name": "mdlinks",
+  "name": "@juanma_v_b/md-link-checker",
   "version": "0.1.0",
   "description": "CLI that finds broken links, missing anchors and undefined references in Markdown files.",
   "type": "module",
@@ -8,7 +8,6 @@
     "node": ">=20.11"
   },
   "bin": {
-    "mdlinks": "./dist/cli.js",
     "md-link-checker": "./dist/cli.js"
   },
   "main": "./dist/index.js",

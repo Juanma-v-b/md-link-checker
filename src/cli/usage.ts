@@ -6,10 +6,10 @@ import {
 } from './args.js';
 
 /** Help text. Kept as a template so defaults never drift from the parser. */
-export const USAGE = `mdlinks — find broken links in Markdown files
+export const USAGE = `md-link-checker — find broken links in Markdown files
 
 Usage:
-  mdlinks <path...> [options]
+  md-link-checker <path...> [options]
 
 Paths can be Markdown files, directories (scanned recursively) or both.
 
@@ -31,9 +31,9 @@ Exit codes:
   2  Invalid usage or configuration
 
 Examples:
-  mdlinks README.md
-  mdlinks docs --ignore node_modules,dist
-  mdlinks . --json --strict > report.json
+  md-link-checker README.md
+  md-link-checker docs --ignore node_modules,dist
+  md-link-checker . --json --strict > report.json
 `;
 
 export function formatUsage(): string {

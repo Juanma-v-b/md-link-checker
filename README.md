@@ -1,4 +1,4 @@
-# mdlinks
+# md-link-checker
 
 A small command-line tool that checks the links in your Markdown files and
 tells you which ones are broken.
@@ -9,7 +9,7 @@ no longer exist, local files that are not there, missing images and anchors
 that lead to a section that doesn't exist. It works with any kind of project
 and doesn't care which language or framework you use.
 
-mdlinks is free and open source (MIT), so you can use it, modify it and
+md-link-checker is free and open source (MIT), so you can use it, modify it and
 share it.
 
 ## Installation
@@ -17,21 +17,21 @@ share it.
 Node.js 20.11 or newer is required.
 
 ```bash
-npm install -g mdlinks
+npm install -g @juanma_v_b/md-link-checker
 ```
 
 Or run it without installing anything:
 
 ```bash
-npx mdlinks README.md
+npx @juanma_v_b/md-link-checker README.md
 ```
 
 ## Usage
 
 ```bash
-mdlinks README.md     # a single file
-mdlinks docs          # a folder, subfolders included
-mdlinks .             # the whole project
+md-link-checker README.md     # a single file
+md-link-checker docs          # a folder, subfolders included
+md-link-checker .             # the whole project
 ```
 
 It reports every problem with the file and the line where it appears, and then
